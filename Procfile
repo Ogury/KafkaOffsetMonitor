@@ -1,0 +1,1 @@
+web: sbt assembly && java -cp target/scala-2.10/KafkaOffsetMonitor-assembly-0.2.2-snapshot.jar com.quantifind.kafka.offsetapp.OffsetGetterWeb --zk $KAFKA --port $PORT --refresh $REFRESH --retain $RETAIN
