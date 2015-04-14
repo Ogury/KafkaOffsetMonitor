@@ -1,6 +1,6 @@
 package com.quantifind.kafka.offsetapp
 
-import scala.slick.driver.SQLiteDriver.simple._
+import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.jdbc.meta.MTable
 
 import com.quantifind.kafka.OffsetGetter.OffsetInfo
@@ -14,8 +14,8 @@ import com.twitter.util.Time
  */
 class OffsetDB(dbfile: String) {
 
-  val database = Database.forURL(s"jdbc:sqlite:$dbfile.db",
-    driver = "org.sqlite.JDBC")
+  val database = Database.forURL(s"jdbc:mysql://localhost:3306/$dbfile",
+    user="root", password="root", driver="org.mariadb.jdbc.Driver");
 
   implicit val twitterTimeMap = MappedColumnType.base[Time, Long](
   {
