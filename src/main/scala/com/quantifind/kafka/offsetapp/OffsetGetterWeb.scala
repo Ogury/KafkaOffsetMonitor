@@ -1,6 +1,5 @@
 package com.quantifind.kafka.offsetapp
 
-import java.sql.SQLException
 import java.util.{Timer, TimerTask}
 
 import com.quantifind.utils.Utils.retry
@@ -14,8 +13,9 @@ import net.liftweb.json.{CustomSerializer, NoTypeHints, Serialization}
 import net.liftweb.json.Serialization.write
 import org.I0Itec.zkclient.ZkClient
 import unfiltered.filter.Plan
+import unfiltered.kit.GZip
 import unfiltered.request.{GET, Path, Seg}
-import unfiltered.response.{JsonContent, Ok, ResponseString}
+import unfiltered.response._
 import com.quantifind.kafka.OffsetGetter
 import com.quantifind.sumac.validation.Required
 import com.twitter.util.Time
@@ -140,22 +140,24 @@ object OffsetGetterWeb extends UnfilteredWebApp[OWArgs] with Logging {
     schedule(args)
 
     def intent: Plan.Intent = {
-      case GET(Path(Seg("group" :: Nil))) =>
-        JsonContent ~> ResponseString(write(getGroups(args)))
-      case GET(Path(Seg("group" :: group :: Nil))) =>
-        val info = getInfo(group, args)
-        JsonContent ~> ResponseString(write(info)) ~> Ok
-      case GET(Path(Seg("group" :: group :: topic :: Nil))) =>
-        val offsets = args.db.offsetHistory(group, topic)
-        JsonContent ~> ResponseString(write(offsets)) ~> Ok
-      case GET(Path(Seg("topiclist" :: Nil))) =>
-        JsonContent ~> ResponseString(write(getTopics(args)))
-      case GET(Path(Seg("clusterlist" :: Nil))) =>
-        JsonContent ~> ResponseString(write(getClusterViz(args)))
-      case GET(Path(Seg("topicdetails" :: group :: Nil))) =>
-        JsonContent ~> ResponseString(write(getTopicDetail(group, args)))
-      case GET(Path(Seg("activetopics" :: Nil))) =>
-        JsonContent ~> ResponseString(write(getActiveTopics(args)))
+      GZip.apply {
+        case GET(Path(Seg("group" :: Nil))) =>
+          JsonContent ~> ResponseString(write(getGroups(args)))
+        case GET(Path(Seg("group" :: group :: Nil))) =>
+          val info = getInfo(group, args)
+          JsonContent ~> ResponseString(write(info)) ~> Ok
+        case GET(Path(Seg("group" :: group :: topic :: Nil))) =>
+          val offsets = args.db.offsetHistory(group, topic)
+          JsonContent ~> ResponseString(write(offsets)) ~> Ok
+        case GET(Path(Seg("topiclist" :: Nil))) =>
+          JsonContent ~> ResponseString(write(getTopics(args)))
+        case GET(Path(Seg("clusterlist" :: Nil))) =>
+          JsonContent ~> ResponseString(write(getClusterViz(args)))
+        case GET(Path(Seg("topicdetails" :: group :: Nil))) =>
+          JsonContent ~> ResponseString(write(getTopicDetail(group, args)))
+        case GET(Path(Seg("activetopics" :: Nil))) =>
+          JsonContent ~> ResponseString(write(getActiveTopics(args)))
+      }
     }
   }
 }
