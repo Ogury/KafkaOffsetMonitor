@@ -12,10 +12,10 @@ import com.twitter.util.Time
  * User: andrews
  * Date: 1/27/14
  */
-class OffsetDB(dbfile: String) {
+class OffsetDB(dbHost: String, dbPort: String, dbfile: String, dbUser: String, dbPassword: String) {
 
-  val database = Database.forURL(s"jdbc:mysql://localhost:3306/$dbfile",
-    user="root", password="root", driver="org.mariadb.jdbc.Driver");
+  val database = Database.forURL(s"jdbc:mysql://$dbHost:$dbPort/$dbfile",
+    user=dbUser, password=dbPassword, driver="org.mariadb.jdbc.Driver");
 
   implicit val twitterTimeMap = MappedColumnType.base[Time, Long](
   {

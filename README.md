@@ -48,7 +48,11 @@ The arguments are:
 - **port** on what port will the app be available
 - **refresh** how often should the app refresh and store a point in the DB
 - **retain** how long should points be kept in the DB
+- **dbHost** (default 'localhost')
+- **dbPort** (default '3306')
 - **dbName** where to store the history (default 'offsetapp')
+- **dbUser** (default '')
+- **dbPassword** (default '')
 
 
 Contributing

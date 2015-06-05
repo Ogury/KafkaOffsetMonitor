@@ -30,9 +30,13 @@ class OWArgs extends OffsetGetterArgs with UnfilteredWebApp.Arguments {
   @Required
   var refresh: FiniteDuration = _
 
+  var dbHost: String = "locahost"
+  var dbPort: String = "3306"
   var dbName: String = "offsetapp"
+  var dbUser: String = ""
+  var dbPassword: String = ""
 
-  lazy val db = new OffsetDB(dbName)
+  lazy val db = new OffsetDB(dbHost, dbPort, dbName, dbUser, dbPassword)
 }
 
 /**
